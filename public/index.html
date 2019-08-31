@@ -1,17 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <title>destruction</title>
-  </head>
-  <body>
-    <noscript>
-      <strong>We're sorry but destruction doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
-    </noscript>
-    <div id="app"></div>
-    <!-- built files will be auto injected -->
-  </body>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,900&display=block" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+
+  <link id="favicon-16">
+  <link id="favicon-32">
+
+  <script>
+    (function () {
+      function setFavicon(empty, size) {
+        var el = document.getElementById('favicon-' + size);
+        var href = 'favicons/favicon-' + (empty ? 'empty-' : '') + size + '.png';
+        el.setAttribute('rel', 'icon');
+        el.setAttribute('type', 'image/png');
+        el.setAttribute('href', href);
+        el.setAttribute('sizes', size + 'x' + size);
+      }
+
+      var destroyed = Cookies.get('destroyed') === 'true';
+
+      if (destroyed) {
+        setFavicon(true, 16);
+        setFavicon(true, 32);
+        document.title = '⠀';
+      } else {
+        setFavicon(false, 16);
+        setFavicon(false, 32);
+        document.title = 'Destruction';
+      }
+    }());
+  </script>
+</head>
+<body>
+<noscript>
+  <strong>Enable JavaScript to continue.</strong>
+</noscript>
+<div id="app"></div>
+</body>
 </html>

@@ -1,8 +1,18 @@
 import Vue from 'vue'
+import Cookies from 'js-cookie';
+
 import App from './App.vue'
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
-new Vue({
-  render: h => h(App),
-}).$mount('#app')
+const destroyed = Cookies.get('destroyed') === 'true';
+
+if (!destroyed) {
+  init();
+}
+
+function init() {
+  new Vue({
+    render: h => h(App),
+  }).$mount('#app');
+}
