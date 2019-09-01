@@ -1,11 +1,10 @@
 import Vue from 'vue'
-import Cookies from 'js-cookie';
 
 import App from './App.vue'
 
 Vue.config.productionTip = false;
 
-const destroyed = Cookies.get('destroyed') === 'true';
+const destroyed = window.Cookies.get('destroyed') === 'true';
 
 if (!destroyed) {
   init();

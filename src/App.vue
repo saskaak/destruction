@@ -62,7 +62,7 @@
 
         this.destroyFavicon();
 
-        Cookies.set('destroyed', 'true');
+        window.Cookies.set('destroyed', 'true');
       },
       async destroyTitle(seconds) {
         const title = document.title;
