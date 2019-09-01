@@ -57,12 +57,12 @@
         this.hideText = true;
         await sleep(3);
 
+        window.Cookies.set('destroyed', 'true');
+
         const pace = await this.destroyTitle(3);
         await sleep(pace);
 
         this.destroyFavicon();
-
-        window.Cookies.set('destroyed', 'true');
       },
       async destroyTitle(seconds) {
         const title = document.title;
