@@ -1,32 +1,58 @@
 <template>
   <div class="App">
     <div class="App__container">
-      <div class="App__text">
-        <Destroyable
-          v-for="(word, index) in textArray"
-          :key="index"
-          :activated="hideText"
-          :position="index / textArray.length"
-          :duration="2"
-        >
-          {{word}}&nbsp;
-        </Destroyable>
+
+      <div class="App__grid">
+        <div class="App__relative">
+
+          <img
+            :src="require('./assets/emile-seguin-R9OueKOtGGU-unsplash.jpg')"
+            :class="['App__image', {'App__image--hide': hideImage}]"
+            title="Photo by EMILE SÉGUIN 🇨🇦 on Unsplash"
+          >
+          <div class="App__text">
+            <Destroyable
+              v-for="(word, index) in textArray"
+              :key="index"
+              :activated="hideDestroyables"
+              :position="index / destroyableItems"
+              :duration="1"
+            >
+              {{word}}&nbsp;
+            </Destroyable>
+
+            <div class="App__author">
+              <Destroyable
+                v-for="(word, index) in authorArray"
+                :key="index"
+                :activated="hideDestroyables"
+                :position="textArray.length + index / destroyableItems"
+                :duration="0"
+              >
+                {{word}}&nbsp;
+              </Destroyable>
+            </div>
+          </div>
+
+        </div>
       </div>
 
-      <button
-        @click.once="process"
+      <div
         :class="['App__button', {
           'App__button--hidden': hideButton,
         }]"
       >
-        !
-      </button>
+        <Button @click.native.once="process">
+          !
+        </Button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
   import Destroyable from "./components/Destroyable";
+  import Button from "./components/Button";
 
   function sleep(s) {
     return new Promise(resolve => setTimeout(resolve, s * 1000));
@@ -35,31 +61,43 @@
   export default {
     name: 'app',
     components: {
-      Destroyable
+      Destroyable,
+      Button,
     },
     data() {
       return {
-        text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+        text: 'Il semble que la perfection soit atteinte non quand il n\'y a plus rien à ajouter, mais quand il n\'y a plus rien à retrancher.',
+        author: 'Antoine de Saint Exupéry',
         hideButton: false,
-        hideText: false,
+        hideDestroyables: false,
+        hideImage: false,
       };
     },
     computed: {
+      destroyableItems() {
+        return [
+          ...this.textArray,
+          ...this.authorArray,
+        ].length;
+      },
       textArray() {
         return this.text.split(' ');
+      },
+      authorArray() {
+        return this.author.split(' ');
       },
     },
     methods: {
       async process() {
         this.hideButton = true;
-        await sleep(0.5);
 
-        this.hideText = true;
-        await sleep(3);
+        this.hideImage = true;
+        this.hideDestroyables = true;
+        await sleep(4);
 
         window.Cookies.set('destroyed', 'true');
 
-        const pace = await this.destroyTitle(3);
+        const pace = await this.destroyTitle(3.5);
         await sleep(pace);
 
         this.destroyFavicon();
@@ -87,53 +125,86 @@
 
 <style lang="scss">
   @import "~reset-css";
-  @import "definitions";
 
   .App {
-    font-family: 'Source Sans Pro', sans-serif;
+    font-family: 'Source Serif Pro', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    color: #444;
   }
 
   .App__container {
-    max-width: 640px;
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    align-items: center;
+    max-width: 960px;
     margin: 0 auto;
-    padding: 4rem 1rem;
+
+    @media (min-width: 30rem) {
+      padding: 0 2rem;
+    }
+  }
+
+  .App__grid {
+    position: relative;
+    display: flex;
+    min-height: 100vh;
+    max-width: 30rem;
+    width: 100%;
+
+    @media (min-width: 30rem) {
+      align-items: center;
+    }
+  }
+
+  .App__relative {
+    position: relative;
+    padding: 0 0 2rem;
+
+    @media (min-width: 30rem) {
+      padding: 2rem 0 4rem;
+    }
+  }
+
+  .App__image {
+    width: 100%;
+    transition: 5s;
+
+    &--hide {
+      opacity: 0;
+    }
   }
 
   .App__text {
-    margin-bottom: 4rem;
-    font-size: 1.5rem;
+    position: absolute;
+    top: 4rem;
+    left: 0;
+    font-size: 1.2rem;
     line-height: 1.5;
+    padding: 2rem;
+    transition: 5s;
+
+    @media (min-width: 30rem) {
+      font-size: 1.5rem;
+      padding: 4rem;
+    }
+  }
+
+  .App__author {
+    color: #bbb;
   }
 
   .App__button {
-    display: block;
-    margin: 0 auto;
-    border: 0;
-    width: 8rem;
     height: 8rem;
-    padding: 0;
-    font-family: inherit;
-    font-size: 5rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    border-radius: 5rem;
-    background-color: $red;
-    color: white;
-    cursor: pointer;
-    letter-spacing: 0.1rem;
     transition: 0.5s;
-
-    &:focus,
-    &:hover {
-      outline: none;
-      box-shadow: 0 0.2rem 0.5rem 0 rgba(black, 0.3);
-    }
+    overflow: hidden;
+    padding: 0 2rem;
 
     &--hidden {
       visibility: hidden;
       opacity: 0;
+      height: 0;
     }
   }
 </style>
